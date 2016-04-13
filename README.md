@@ -35,31 +35,30 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	ZONE=external
 	```
 	```
-        $ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp4s1
-        ```
-        * Modify / Add the following lines to the config
-        ```
-        BOOTPROTO=static
-        IPADDR=10.0.0.1
+	$ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp4s1
+	```
+	* Modify / Add the following lines to the config
+	```
+	BOOTPROTO=static
+	IPADDR=10.0.0.1
 	NETMASK=255.255.255.0
 	NM_CONTROLLED=no
-        ONBOOT=yes
-        ZONE=internal
+	ONBOOT=yes
+	ZONE=internal
 	
-        ```
 	```
-        $ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp4s1
-        ```
-        * Modify / Add the following lines to the config
-        ```
-        BOOTPROTO=static
-        IPADDR=192.168.0.1
-        NETMASK=255.255.255.0
-        NM_CONTROLLED=no
-        ONBOOT=yes
-        ZONE=dmz
-
-        ```
+	```
+	$ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp4s1
+	```
+	* Modify / Add the following lines to the config
+	```
+	BOOTPROTO=static
+	IPADDR=192.168.0.1
+	NETMASK=255.255.255.0
+	NM_CONTROLLED=no
+	ONBOOT=yes
+	ZONE=dmz
+	```
 
 * Edit the dnsmasq configuration file
 	```
@@ -94,4 +93,17 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	Re-read your bashrc file
 	```
 	$ sudo source ~/.bashrc
+	```
+* Set up the firewall
+	```
+	$ sudo systemctl start firewalld
+	$ sudo firewall-cmd --list-all-zones
+	$ sudo firewall-cmd --zone=external --change-interface=enp3s0
+	$ sudo firewall-cmd --zone=internal --change-interface=enp4s1
+	$ sudo firewall-cmd --zone=dmz --change-interface=enp4s2
+	$ sudo firewall-cmd --zone=internal --add-service=dhcp
+	$ sudo firewall-cmd --zone=internal --add-service=dns
+	$ sudo firewall-cmd --zone=dmz --add-service=dhcp
+	$ sudo firewall-cmd --zone=dmz --add-service=dns
+	$ sudo firewall-cmd --runtime-to-permanent
 	```
