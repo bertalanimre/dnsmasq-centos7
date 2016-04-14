@@ -27,7 +27,7 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	```
 	$ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp3s0
 	```
-	* Modify / Add the following lines to the config
+	* Modify \/ Add the following lines to the config
 	```
 	BOOTPROTO=dhcp
 	NM_CONTROLLED=no
@@ -37,7 +37,7 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	```
 	$ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp4s1
 	```
-	* Modify / Add the following lines to the config
+	* Modify or Add the following lines to the config
 	```
 	BOOTPROTO=static
 	IPADDR=10.0.0.1
@@ -50,7 +50,7 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	```
 	$ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp4s1
 	```
-	* Modify / Add the following lines to the config
+	* Modify or Add the following lines to the config
 	```
 	BOOTPROTO=static
 	IPADDR=192.168.0.1
@@ -64,7 +64,7 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	```
 	$ sudo vim /etc/dnsmasq.conf
 	```
-	* Modify / Add the following lines to the config
+	* Modify or Add the following lines to the config
 	```
 	bogus-priv
 	server=8.8.8.8
@@ -80,21 +80,8 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	log-dhcp
 	conf-dir=/etc/dnsmasq.d
 	```
-* Create and alias for the converting the configuration files and restarting dnsmasq service
-	```
-	$ sudo chmod +x ./dnsmasq-convert (optionally if it is not already executeable)
-	$ sudo cp ./dnsmasq-convert /usr/local/sbin/dnsmasq-converter
-	$ sudo vim ~/.bashrc
-	```
-	Add the following line to the end of your file:
-	```
-	alias dnsrestart="dnsmasq-converter; systemctl restart dnsmasq"
-	```
-	Re-read your bashrc file
-	```
-	$ sudo source ~/.bashrc
-	```
-* Set up the firewall
+
+* Setup the firewall
 	```
 	$ sudo systemctl start firewalld
 	$ sudo firewall-cmd --list-all-zones
@@ -104,6 +91,22 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	$ sudo firewall-cmd --zone=internal --add-service=dhcp
 	$ sudo firewall-cmd --zone=internal --add-service=dns
 	$ sudo firewall-cmd --zone=dmz --add-service=dhcp
-	$ sudo firewall-cmd --zone=dmz --add-service=dns
 	$ sudo firewall-cmd --runtime-to-permanent
+	```
+	
+## Make it easy
+
+* Create an alias for converting the configuration files and restarting dnsmasq
+	```
+	$ sudo chmod +x ./dnsmasq-convert (optionally if it is not already executeable)
+	$ sudo cp ./dnsmasq-convert /usr/local/sbin/dnsmasq-converter
+	$ sudo vim ~/.bashrc
+	```
+	* Add the following line to the end of your .bashrc
+	```
+	alias dnsrestart="dnsmasq-converter; systemctl restart dnsmasq"
+	```
+	* Re-Read the .bashrc file
+	```
+	$ sudo ~/.bashrc
 	```
