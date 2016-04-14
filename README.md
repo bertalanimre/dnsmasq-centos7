@@ -98,13 +98,13 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 
 * Create an alias for converting the configuration files and restarting dnsmasq
 	```
-	$ sudo chmod +x ./dnsmasq-convert (optionally if it is not already executeable)
-	$ sudo cp ./dnsmasq-convert /usr/local/sbin/dnsmasq-converter
+	$ sudo cp ./dnsmasq-convert /usr/local/sbin/dnsmasq-convert
+	
 	$ sudo vim ~/.bashrc
 	```
 	* Add the following line to the end of your .bashrc
 	```
-	alias dnsrestart="dnsmasq-converter; systemctl restart dnsmasq"
+	alias dnsrestart="/usr/local/sbin/dnsmasq-convert; systemctl restart dnsmasq"
 	```
 	* Re-Read the .bashrc file
 	```
