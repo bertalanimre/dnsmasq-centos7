@@ -18,9 +18,8 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 
 * Update server
 	```
-	$ sudo yum install epel-release
 	$ sudo yum update -y
-	$ sudo yum install wget vim mc ruby
+	$ sudo yum install wget vim mc ruby firewalld
 	```
 
 * Edit the network cards, in this case 3 of them. 1# External, 2# Internal, 3# DMZ (for WiFi guests)
@@ -85,9 +84,9 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	```
 	$ sudo systemctl start firewalld
 	$ sudo firewall-cmd --list-all-zones
-	$ sudo firewall-cmd --zone=external --change-interface=enp3s0
-	$ sudo firewall-cmd --zone=internal --change-interface=enp4s1
-	$ sudo firewall-cmd --zone=dmz --change-interface=enp4s2
+	$ sudo firewall-cmd --zone=external --change-interface=enp3s0 (only if it is not there already)
+	$ sudo firewall-cmd --zone=internal --change-interface=enp4s1 (only if it is not there already)
+	$ sudo firewall-cmd --zone=dmz --change-interface=enp4s2 (only if it is not there already)
 	$ sudo firewall-cmd --zone=internal --add-service=dhcp
 	$ sudo firewall-cmd --zone=internal --add-service=dns
 	$ sudo firewall-cmd --zone=dmz --add-service=dhcp
@@ -96,8 +95,15 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	
 * In case you need PPPOE
 	```
-	$sudo yum install rp-pppoe
-	pppoe-setup
+	$ sudo yum install rp-pppoe
+	$ sudo pppoe-setup
+	<FOLLOW STEPS>
+	```
+	* Add ```ZONE=external``` to yout ppp0 interface
+	```
+	$ sudo vim /etc/sysconfig/network-scripts/ifcfg-ppp0
+	$ sudo reboot
+	$ sudo ifup ppp0
 	```
 	
 ## Make it easy
@@ -121,11 +127,19 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 * Why firewalld and not iptables?
 	* Because RedHat didn't make firewalld to use iptables. Firewalld will be the future
 
+* When I try to start firewalld I get the following error: FATAL ERROR: No IPv4 and IPv6 firewall.
+	* There could be two options. One, you don't have iptables installed. This is unlikely. The other is that there is a problem with your kernel version installed. Run a yum upgrade and reboot the machine. This worked for me tho, I still don't get what is the problem, but it appeared on very old computers for me.
+
 * In the dnsmasq.conf you have 2 dhcp-ranges. One with ```net:known```, the other is without it. Why?
 	* In my case we have 2 WiFi networks with 2 routers. One for the internal network, the other one is a guest WiFi. I've set the routers to be only Acces Points because it would be better if the firewall handles the DHCP requests and not them. This way I don't need to forward traffic from the routers network to the internal, etc. But the real reason is simple. Imagine a guest WiFi where you can join only if you have your MAC address in the system already? Sounds stupid right? "Anyone" should be able to connect. The ```net:known``` parameter tells the dhcp-range to let only the known devices to connect. Everyone else will not get any IP address. For the Guest WiFi I've disabled this, so all my guests can access to the internet.
 
 * What is that ZONE=external, internal and dmz in the network interfaces cfg file?
-	* Firewalld can configures the network interfaces directly. If you enter the ZONE variable you can tell the interface which zone it belongs to. This has to be done because of a little BUG, you can't save the firewall-cmd configuration with --runtime-to-permanent. 
+	* Firewalld can configures the network interfaces directly. If you enter the ZONE variable you can tell the interface which zone it belongs to. This has to be done because of a BUG, you can't save the firewall-cmd configuration with --runtime-to-permanent. 
 
 * Why the 3 internet zones?
 	* Simple: External handles the internet side. If you have PPPOE connection, you have to add the ppp0 device to this zone as well. Otherwise nobody will have iinternet, only the firewall. Internal is for the office use. DMZ is for the guests so they can access the internet without connecting to my internal network. Firewall handles and masqurades the connections already so you don't have to worry about this. But only if you've used the internal, external and dmz zones. In other cases you have to set the masqurade up yourself but it isn't that hard.
+
+* 
+
+* Is this all I have to do? What about FTP server, git server, etc?
+	* OCF not. I also recommend generating an SSH keypair for the user who will log in the computer and deny passwordlogin in the sshd_config. Running anything other on the firewall than the DHCP and DNS services would be very silly, so get another computer for that.
