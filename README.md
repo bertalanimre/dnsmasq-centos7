@@ -139,7 +139,5 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 * Why the 3 internet zones?
 	* Simple: External handles the internet side. If you have PPPOE connection, you have to add the ppp0 device to this zone as well. Otherwise nobody will have iinternet, only the firewall. Internal is for the office use. DMZ is for the guests so they can access the internet without connecting to my internal network. Firewall handles and masqurades the connections already so you don't have to worry about this. But only if you've used the internal, external and dmz zones. In other cases you have to set the masqurade up yourself but it isn't that hard.
 
-* 
-
 * Is this all I have to do? What about FTP server, git server, etc?
 	* OCF not. I also recommend generating an SSH keypair for the user who will log in the computer and deny passwordlogin in the sshd_config. Running anything other on the firewall than the DHCP and DNS services would be very silly, so get another computer for that.
