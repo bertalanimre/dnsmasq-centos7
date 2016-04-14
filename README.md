@@ -27,7 +27,7 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	```
 	$ sudo vim /etc/sysconfig/network-scrips/ifconfig-enp3s0
 	```
-	* Modify \/ Add the following lines to the config
+	* Modify or Add the following lines to the config
 	```
 	BOOTPROTO=dhcp
 	NM_CONTROLLED=no
@@ -116,3 +116,16 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	```
 	$ sudo ~/.bashrc
 	```
+## Q&A
+
+* Why firewalld and not iptables?
+	* Because RedHat didn't make firewalld to use iptables. Firewalld will be the future
+
+* In the dnsmasq.conf you have 2 dhcp-ranges. One with ```net:known```, the other is without it. Why?
+	* In my case we have 2 WiFi networks with 2 routers. One for the internal network, the other one is a guest WiFi. I've set the routers to be only Acces Points because it would be better if the firewall handles the DHCP requests and not them. This way I don't need to forward traffic from the routers network to the internal, etc. But the real reason is simple. Imagine a guest WiFi where you can join only if you have your MAC address in the system already? Sounds stupid right? "Anyone" should be able to connect. The ```net:known``` parameter tells the dhcp-range to let only the known devices to connect. Everyone else will not get any IP address. For the Guest WiFi I've disabled this, so all my guests can access to the internet.
+
+* What is that ZONE=external, internal and dmz in the network interfaces cfg file?
+	* Firewalld can configures the network interfaces directly. If you enter the ZONE variable you can tell the interface which zone it belongs to. This has to be done because of a little BUG, you can't save the firewall-cmd configuration with --runtime-to-permanent. 
+
+* Why the 3 internet zones?
+	* Simple: External handles the internet side. If you have PPPOE connection, you have to add the ppp0 device to this zone as well. Otherwise nobody will have iinternet, only the firewall. Internal is for the office use. DMZ is for the guests so they can access the internet without connecting to my internal network. Firewall handles and masqurades the connections already so you don't have to worry about this. But only if you've used the internal, external and dmz zones. In other cases you have to set the masqurade up yourself but it isn't that hard.
