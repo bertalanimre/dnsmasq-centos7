@@ -94,6 +94,12 @@ In the beginning I'll just tell you the methods and the way of configuration. So
 	$ sudo firewall-cmd --runtime-to-permanent
 	```
 	
+* In case you need PPPOE
+	```
+	$sudo yum install rp-pppoe
+	pppoe-setup
+	```
+	
 ## Make it easy
 
 * Create an alias for converting the configuration files and restarting dnsmasq
