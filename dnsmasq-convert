@@ -15,7 +15,7 @@ def identify instance, fragment
   when /port-\d{1,}\Z/i
     instance[:port] ||= []
     instance[:port]  << fragment
-  when /\A[-a-z0-9]{1,}\Z/i
+  when /\A[-a-z0-9.]{1,}\Z/i
     instance[:name] ||= []
     instance[:name]  << fragment
   else
@@ -60,7 +60,7 @@ File.open('/etc/dnsmasq.hosts.conf', 'w') do |output|
   banner(output)
   instances.each do |instance|
     instance[:name].each do |name|
-      output.write '%-18s %s%s' % [ instance[:ipv4], name, "\n" ]
+      output.write '%-18s %s%s' % [ instance[:ipv4].first, name, "\n" ]
     end
   end
 end
